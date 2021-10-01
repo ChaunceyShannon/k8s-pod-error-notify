@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: others
+resources:
+  - deployment.yaml
+  - ClusterRole.yaml
+  - ClusterRoleBinding.yaml
+  - ServiceAccount.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+configMapGenerator:
+  - name: k8s-pod-error-notify-configmap
+    files:
+      - k8s-pod-error-notify.ini=k8s-pod-error-notify.ini

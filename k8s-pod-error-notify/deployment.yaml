@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-pod-error-notify
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-pod-error-notify
+  template:
+    metadata:
+      labels:
+        app: k8s-pod-error-notify
+    spec:
+      imagePullSecrets:
+        - name: registry.svc.ltd
+      
+      serviceAccount: k8s-pod-error-notify
+      serviceAccountName: k8s-pod-error-notify
+
+      containers:
+        - image: chaunceyshannon/k8s-pod-error-notify:2633a6a # Note that this image does not support post to webhook but to telegram bot
+          imagePullPolicy: IfNotPresent
+          name: k8s-pod-error-notify
+
+          resources:
+            requests:
+              memory: "50Mi"
+            limits:
+              memory: "100Mi"
+          
+          volumeMounts:
+            - name: configmap-volume
+              mountPath: /app/k8s-pod-error-notify.ini
+              subPath: k8s-pod-error-notify.ini
+
+      volumes:
+        - name: configmap-volume
+          configMap:
+            name: k8s-pod-error-notify-configmap
